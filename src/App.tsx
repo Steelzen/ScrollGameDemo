@@ -1,11 +1,11 @@
 import React from "react";
 import "./App.css";
-import MainPage from "./pages/mainPage";
+import ModularRoutes from "./routes";
 
 function App() {
   return (
     <div className="App">
-      <MainPage />
+      <ModularRoutes />
     </div>
   );
 }

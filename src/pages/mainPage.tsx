@@ -1,5 +1,4 @@
-import GameStartButton from "../buttons/gameStart";
-import LeaderBoardButton from "../buttons/leaderBoard";
+import LinkButton from "../buttons/linkButton";
 import "./styles.css";
 
 const MainPage = () => {
@@ -9,8 +8,16 @@ const MainPage = () => {
     <div className="mainPage">
       <h1>Scroll Game Demo</h1>
       <h2>Developed by {developerName}</h2>
-      <GameStartButton />
-      <LeaderBoardButton />
+      <LinkButton
+        link="/game"
+        buttonName="Start Game"
+        className="gameStartButton"
+      />
+      <LinkButton
+        link="/leaderboard"
+        buttonName="Leader Board"
+        className="leaderBoardButton"
+      />
     </div>
   );
 };
