@@ -1,0 +1,33 @@
+.humanPlayer {
+  position: relative;
+  width: 9rem;
+  height: 15rem;
+  /* background-image: url(../assets/images/hp.png); */
+  z-index: 1;
+  transform: translate(var(--x, 0), var(--y, 0));
+  transition: transform 0.1s ease-in-out;
+}
+
+.hpTexture {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: blue;
+}
+
+.aiPlayer {
+  position: relative;
+  width: 9rem;
+  height: 15rem;
+  /* background-image: url(../assets/images/hp.png); */
+  z-index: 1;
+  transform: translate(var(--x, 0), var(--y, 0));
+  transition: transform 0.1s ease-in-out;
+}
+
+.apTexture {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: red;
+}

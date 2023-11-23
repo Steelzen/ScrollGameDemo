@@ -1,7 +1,11 @@
-const AiPlayer = () => {
+import "./styles.css";
+
+type AiPlayerProps = {};
+
+const AiPlayer: React.FC<AiPlayerProps> = () => {
   return (
-    <div>
-      <p>Ai Player</p>
+    <div className="aiPlayer">
+      <div className="apTexture"></div>
     </div>
   );
 };
