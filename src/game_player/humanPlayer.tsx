@@ -1,57 +1,103 @@
-import "./styles.css";
-import React, { useState, useEffect } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 
-type HumanPlayerProps = {
+interface HumanPlayerProps {
   context: CanvasRenderingContext2D;
-};
+  boardHeight: number;
+}
 
-const HumanPlayer: React.FC<HumanPlayerProps> = ({ context }) => {
-  const [position, setPosition] = useState({ x: 100, y: 200 });
+export interface HumanPlayerRef {
+  updatePosition: () => void;
+}
 
-  const handleKeyPress = (e: KeyboardEvent) => {
-    switch (e.key) {
-      case "w":
-        setPosition((prev) => ({ ...prev, y: prev.y - 10 }));
-        break;
-      case "a":
-        setPosition((prev) => ({ ...prev, x: prev.x - 10 }));
-        break;
-      case "s":
-        setPosition((prev) => ({ ...prev, y: prev.y + 10 }));
-        break;
-      case "d":
-        setPosition((prev) => ({ ...prev, x: prev.x + 10 }));
-        break;
-      default:
-        break;
+const HumanPlayer: React.ForwardRefRenderFunction<
+  HumanPlayerRef,
+  HumanPlayerProps
+> = ({ context, boardHeight }, ref) => {
+  const characterWidth = 100;
+  const characterHeight = 250;
+  const boardFloorPosition = boardHeight - characterHeight - 20;
+  const position = useRef({ x: 100, y: boardFloorPosition });
+  const prevPosition = useRef({
+    x: 100,
+    y: boardFloorPosition,
+  });
+  const isJumping = useRef(false);
+  const jumpY = useRef(0);
+  const jumpHeight = 200;
+  const jumpSpeed = 10;
+
+  const handleJump = () => {
+    if (isJumping.current) {
+      if (jumpY.current < jumpHeight) {
+        position.current.y -= jumpSpeed;
+        jumpY.current += jumpSpeed;
+      } else if (
+        jumpY.current >= jumpHeight &&
+        position.current.y < boardFloorPosition
+      ) {
+        position.current.y += jumpSpeed;
+        if (position.current.y >= boardFloorPosition) {
+          position.current.y = boardFloorPosition;
+          isJumping.current = false;
+        }
+      }
     }
   };
 
-  useEffect(() => {
+  const draw = () => {
+    context.clearRect(
+      prevPosition.current.x,
+      prevPosition.current.y,
+      characterWidth,
+      characterHeight
+    );
+    handleJump();
     context.fillStyle = "blue";
-    context.fillRect(position.x, position.y, 50, 50);
-  }, [context, position]);
+    context.fillRect(
+      position.current.x,
+      position.current.y,
+      characterWidth,
+      characterHeight
+    );
+    prevPosition.current = { ...position.current };
+  };
 
   useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case "w":
+          if (!isJumping.current) {
+            isJumping.current = true;
+            jumpY.current = 0;
+          }
+          break;
+        case "a":
+          position.current.x -= 20;
+          break;
+        case "d":
+          position.current.x += 20;
+          break;
+        default:
+          break;
+      }
+    };
+
     window.addEventListener("keydown", handleKeyPress);
     return () => {
       window.removeEventListener("keydown", handleKeyPress);
     };
   }, []);
 
-  return (
-    <div
-      className="humanPlayer"
-      style={
-        {
-          "--x": `${position.x}px`,
-          "--y": `${position.y}px`,
-        } as React.CSSProperties
-      }
-    >
-      <div className="hpTexture"></div>
-    </div>
-  );
+  useImperativeHandle(ref, () => ({
+    updatePosition: draw,
+  }));
+
+  return null;
 };
 
-export default HumanPlayer;
+export default forwardRef(HumanPlayer);
